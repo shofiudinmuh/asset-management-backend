@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asset;
 use Illuminate\Http\Request;
+use App\Http\Resources\AssetResource;
+use App\Http\Resources\AssetCollection;
+use App\Http\Requests\StoreAssetRequest;
+use App\Http\Requests\UpdateAssetRequest;
 
 class AssetController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try{
             $perPage = $request->query('per_page', 10);

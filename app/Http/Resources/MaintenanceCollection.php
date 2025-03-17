@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class AssetCollection extends ResourceCollection
+class MaintenanceCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -17,7 +17,7 @@ class AssetCollection extends ResourceCollection
         return [
             'data' => $this->collection,
             'links' => [
-                'self' => url('/api/assets'),
+                'self' => url('/api/maintenances'),
             ],
         ];
     }
