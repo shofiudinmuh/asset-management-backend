@@ -4,28 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class LocationController extends Controller
+class AssetController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
         try{
             $perPage = $request->query('per_page', 10);
-            $locations = Location::paginate($perPage);
-            
+            $assets = Asset::with(['location'])->paginate($perPage);
+
             return response()->json([
                 'success' => true,
-                'message' => 'Data lokasi berhasil diambil.',
-                'data' => new LocationCollection($locations),
+                'message' => 'Data aset berhasil diambil',
+                'data' => new AssetCollection($assets),
             ], 200);
         }catch(Exception $e){
-            Log::error('Error fetching locations: ' .$e->getMessage());
+            Log::error('Error fetching assets: '. $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal mengambil data lokasi.',
+                'message' => 'Gagal mengambil data aset',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -34,22 +34,22 @@ class LocationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLocationRequest $request)
+    public function store(StoreAssetRequest $request)
     {
         try{
-            $location = Location::create($request->validated());
+            $asset = Asset::create($request->validated());
 
             return response()->json([
                 'success' => true,
-                'message' => 'Lokasi berhasil disimpan!',
-                'data' => new LocationResource($location),
+                'message' => 'Asset berhasil disimpan',
+                'data' => new AssetResource($asset),
             ], 201);
         }catch(Exception $e){
-            Log::error('Error creating location: ' . $e->getMessage());
+            Log::error('Error creating asset: '. $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menambahkan lokasi!',
+                'message' => 'Gagal menambahkan asset!',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -58,20 +58,20 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Location $location)
+    public function show(Asset $asset)
     {
         try{
             return response()->json([
                 'success' => true,
-                'message' => 'Detail location berhasil diambil.',
-                'data' => new LocationResource($location),
+                'message' => 'Detail asset berhasil diambil!',
+                'data' => new AssetResource($asset),
             ], 200);
         }catch(Exception $e){
-            Log::error('Error fetching location details :' .$e->getMessage());
-            
+            Log::error('Error fetching asset details :' . $e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal mengambil detail lokasi.',
+                'message' => 'Gagal mengambil detail asset!',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -80,22 +80,22 @@ class LocationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLocationRequest $request, Location $location)
+    public function update(UpdateAssetRequest $request, Asset $id)
     {
         try{
-            $location->update($request->validated());
+            $asset->update($request->validated());
 
             return response()->json([
                 'success' => true,
-                'message' => 'Lokasi berhasi diperbarui.',
-                'data' => new LocationResource($location),
+                'message' => 'Asset berhasil diperbarui!',
+                'data' => new AssetResource($asset),
             ], 200);
         }catch(Exception $e){
-            Log::error('Error updating location: ' .$e->getMessage());
+            Log::error('Error updating asset: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal memperbarui lokasi.',
+                'message' => 'Gagal memperbarui asset',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -104,21 +104,21 @@ class LocationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Location $location)
+    public function destroy(Asset $asset)
     {
         try{
-            $location->delete();
+            $asset->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Lokasi berhasi dihapus!',
+                'message' => 'Asset berhasil dihapus!',
             ], 200);
         }catch(Exception $e){
-            Log::erro('Error deleting location : ' .$e->getMessage());
+            Log::error('Error deleting asset :'. $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menghapus lokasi!',
+                'message' => 'Gagal menghapus asset!',
                 'error' => $e->getMessage(),
             ], 500);
         }
