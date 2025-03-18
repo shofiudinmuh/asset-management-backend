@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\LocationResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AssetResource extends JsonResource

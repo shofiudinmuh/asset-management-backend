@@ -5,9 +5,10 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\AssetResource;
+use App\Http\Resources\LocationResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MaintenanceResource extends JsonResource
+class TransactionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,10 +20,10 @@ class MaintenanceResource extends JsonResource
         return [
             'id' => $this->id,
             'asset' => new AssetResource($this->whenLoaded('asset')),
-            'maintenance_date' => $this->maintenance_date,
-            'description' => $this->description,
-            'cost' => $this->cost,
-            'technician' => new UserResource($this->whenLoaded('technician')),
+            'user' => new UserResource($this->whenLoaded('user')),
+            'transaction_type' => $this->transaction_type,
+            'transaction_date' => $this->transaction_date,
+            'location' => new LocationResource($this->whenLoaded('location')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
