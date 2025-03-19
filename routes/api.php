@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\TransactionController;
 
@@ -19,4 +20,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource('/asset', AssetController::class);
     Route::resource('/maintenance', MaintenanceController::class);
     Route::resource('/transaction', TransactionController::class);
+    Route::resource('/supplier', SupplierController::class);
 });
