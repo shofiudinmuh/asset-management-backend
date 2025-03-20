@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PurchaseOrder;
+use App\Http\Resources\PurchaseOrderResource;
 use App\Http\Resources\PurchaseOrderCollection;
 use App\Http\Requests\StorePurchaseOrderRequest;
 use App\Http\Requests\UpdatePurchaseOrderRequest;
