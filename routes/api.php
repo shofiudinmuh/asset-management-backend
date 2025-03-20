@@ -8,6 +8,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PurchaseOrderController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -21,4 +22,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource('/maintenance', MaintenanceController::class);
     Route::resource('/transaction', TransactionController::class);
     Route::resource('/supplier', SupplierController::class);
+    Route::resource('/purchase-order', PurchaseOrderController::class);
 });
