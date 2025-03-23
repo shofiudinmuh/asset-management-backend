@@ -7,6 +7,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PurchaseOrderController;
@@ -18,6 +19,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/profile', [AuthController::class, 'profile']);
+    Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::resource('/location', LocationController::class);
     Route::resource('/asset', AssetController::class);
     Route::resource('/maintenance', MaintenanceController::class);
