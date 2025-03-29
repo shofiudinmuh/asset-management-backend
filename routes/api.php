@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LocationController;
@@ -27,4 +28,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource('/supplier', SupplierController::class);
     Route::resource('/purchase-order', PurchaseOrderController::class);
     Route::resource('/documents', DocumentController::class);
+    Route::resource('/users', UserController::class);
 });
