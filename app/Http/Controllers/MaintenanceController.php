@@ -85,7 +85,7 @@ class MaintenanceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMaintenanceRequest $request, Maintenance $id)
+    public function update(UpdateMaintenanceRequest $request, Maintenance $maintenance)
     {
         try{
             $maintenance->update($request->validated());
