@@ -85,7 +85,7 @@ class AssetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAssetRequest $request, Asset $id)
+    public function update(UpdateAssetRequest $request, Asset $asset)
     {
         try{
             $asset->update($request->validated());
