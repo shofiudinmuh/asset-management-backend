@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Resources\SupplierResource;
 use App\Http\Resources\SupplierCollection;
 use App\Http\Requests\StoreSupplierRequest;
@@ -87,12 +88,14 @@ class SupplierController extends Controller
      */
     public function update(UpdateSupplierRequest $request, Supplier $supplier){
         try{
+
+            Log::info('Data yang diterima:', $request->all());
             $supplier->update($request->validated());
 
             return response()->json([
                 'success' => true,
                 'message' => 'Berhasil memperbarui data supplier!',
-                'data' => new SupplierResource($supplier),
+                'data' => $supplier,
             ], 200);
         }catch(Exception $e){
             Log::error("Error updating supplier data : " . $e->getMessage());
@@ -112,7 +115,7 @@ class SupplierController extends Controller
     public function destroy(Supplier $supplier)
     {
         try{
-            $location->delete();
+            $supplier->delete();
 
             return response()->json([
                 'success' => true,

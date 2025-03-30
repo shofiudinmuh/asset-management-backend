@@ -14,19 +14,27 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PurchaseOrderController;
 
 
+// Handle OPTIONS requests for CORS preflight
+// Route::options('/{any}', function () {
+//     return response()->noContent()
+//         ->header('Access-Control-Allow-Origin', '*')
+//         ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
+//         ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+// })->where('any', '.*');
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/profile', [AuthController::class, 'profile']);
+    Route::post('/profiles', [AuthController::class, 'profile']);
     Route::get('/dashboard', [DashboardController::class, 'index']);
-    Route::resource('/location', LocationController::class);
-    Route::resource('/asset', AssetController::class);
-    Route::resource('/maintenance', MaintenanceController::class);
-    Route::resource('/transaction', TransactionController::class);
-    Route::resource('/supplier', SupplierController::class);
-    Route::resource('/purchase-order', PurchaseOrderController::class);
+    Route::resource('/locations', LocationController::class);
+    Route::resource('/assets', AssetController::class);
+    Route::resource('/maintenances', MaintenanceController::class);
+    Route::resource('/transactions', TransactionController::class);
+    Route::resource('/suppliers', SupplierController::class);
+    Route::resource('/purchase-orders', PurchaseOrderController::class);
     Route::resource('/documents', DocumentController::class);
     Route::resource('/users', UserController::class);
 });
