@@ -13,9 +13,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append([
+        $middleware->api(prepend:[
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \Illuminate\Session\Middleware\StartSession::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            '*'
+        ]);
+        $middleware->alias([
+            'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+        ]);
+        $middleware->append(\App\Http\Middleware\Cors::class);
     })
     ->withProviders([
         RouteServiceProvider::class, // Tambahkan ini agar provider dikenali

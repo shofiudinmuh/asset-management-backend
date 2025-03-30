@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Models\Transaction;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\DatAssetsloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Location extends Model
 {

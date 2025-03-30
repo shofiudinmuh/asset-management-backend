@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Auth\LoginRequest;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -39,38 +43,59 @@ class AuthController extends Controller
     }
 
     // LOGIN USER
-    public function login(Rrequest $request){
+    public function login(LoginRequest $request){
         try{
-            $validateData = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required|string'
-            ]);
+            // $validateData = $request->validate([
+            //     'email' => 'required|email',
+            //     'password' => 'required|string'
+            // ]);
 
-            $user = User::where('email', $validateData['email'])->first();
+            // // Cari user berdasarkan email
+            // $user = User::where('email', $validateData['email'])->first();
 
-            if(!$user || !Hash::check($validateData['password'], $user->password)){
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Email atau password salah',
-                    'errors' => ['credentials' => 'Email atau password tidak sesuai.']
-                ], 401);
-            }
+            // // Jika email tidak ditemukan
+            // if (!$user) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Email belum terdaftar!',
+            //         'errors' => ['email' => 'Email belum terdaftar!']
+            //     ], 401);
+            // }
 
-            $token = $user->createToken('auth_token')->plainTextToken;
+            // // Jika password salah
+            // if (!Hash::check($validateData['password'], $user->password)) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Password salah!',
+            //         'errors' => ['password' => 'Password yang dimasukkan salah!']
+            //     ], 401);
+            // }
+
+            $request->authenticate();
+
+            $request->session()->regenerate();
+
+            $user = Auth::user();
+            // Hapus token lama (agar hanya 1 token aktif per user)
+            $user->tokens()->delete();
+
+            // Buat token baru
+            $token = $user->createToken('auth-token')->plainTextToken;
 
             return response()->json([
                 'success' => true,
                 'message' => 'Login berhasil!',
                 'data' => [
-                    'user' => new UserResource($user),
+                    'user' => $user,
                     'token' => $token,
                 ],
             ], 200);
-        }catch(Exception $e){
+
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat login!',
-                'erros' => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
