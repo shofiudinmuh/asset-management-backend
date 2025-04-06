@@ -22,11 +22,11 @@ class UpdateMaintenanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'asset_id' => 'sometimes|exists:assets,id',
-            'maintenance_date' => 'sometimes|date',
-            'description' => 'sometimes|string',
-            'cost' => 'sometimes|numeric',
-            'technician_id' => 'sometimes|exists:users,id',
+            'asset_id' => 'sometimes|required|exists:assets,id',
+            'maintenance_date' => 'sometimes|required|date',
+            'description' => 'sometimes|required|string',
+            'cost' => 'sometimes|required|numeric',
+            'technician_id' => 'sometimes|required|exists:users,id',
         ];
     }
 }

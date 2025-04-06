@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Http\Resources\TransactionResource;
 use App\Http\Resources\TransactionCollection;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
@@ -45,7 +46,7 @@ class TransactionController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Transaksi berhasi ditambahkan!',
-                'data' => new TransactionRecource($transaction),
+                'data' => new TransactionResource($transaction),
             ], 201);
         }catch(Exception $e){
             Log::error("Error creating transaction : ". $e->getMessage());
@@ -86,7 +87,7 @@ class TransactionController extends Controller
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
         try{
-            $transaction->update($request->validate());
+            $transaction->update($request->validated());
 
             return response()->json([
                 'success' => true,
