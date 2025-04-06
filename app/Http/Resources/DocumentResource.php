@@ -18,7 +18,7 @@ class DocumentResource extends JsonResource
             'id' => $this->id,
             'asset_id' => $this->asset_id,
             'document_name' => $this->document_name,
-            'file_path' => asset('storage/document' . $this->file_path),
+            'file_path' => asset('storage/' . $this->file_path),
             'created_at' => $this->created_at,
             'updated_at' =>$this->updated_at
         ];

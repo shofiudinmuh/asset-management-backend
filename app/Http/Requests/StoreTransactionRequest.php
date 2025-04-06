@@ -24,7 +24,7 @@ class StoreTransactionRequest extends FormRequest
         return [
             'asset_id' => 'required|exists:assets,id',
             'user_id' => 'required|exists:users,id',
-            'transation_type' => 'required|in:Pinjam,Kembalikan,Transfer',
+            'transaction_type' => 'required|in:Pinjam,Kembalikan,Transfer',
             'transaction_date' => 'required|date',
             'location_id' => 'required|exists:locations,id',
         ];

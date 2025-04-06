@@ -23,7 +23,7 @@ class MaintenanceController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Data maintenance berhasil diambil!',
-                'data' => new MaintenanceResource($maintenance),
+                'data' => MaintenanceResource::collection($maintenance),
             ], 200);
         }catch(Exception $e){
             Log::error('Error fetching maintenance data : ' . $e->getMessage());
@@ -42,7 +42,7 @@ class MaintenanceController extends Controller
     public function store(StoreMaintenanceRequest $request)
     {
         try{
-            $maintenance = Maintenance::crete($request->validated());
+            $maintenance = Maintenance::create($request->validated());
 
             return response()->json([
                 'success' => true,
@@ -93,7 +93,7 @@ class MaintenanceController extends Controller
             return response()->json([
                 'success' => true,
                 'message' =>'Maintenance berhasil diupdate',
-                'data' => new MaintenanceResouce($maintenance),
+                'data' => new MaintenanceResource($maintenance),
             ], 200);
         }catch(Exception $e){
             Log::error("Error updating maintenance data :" .$e->getMessage());

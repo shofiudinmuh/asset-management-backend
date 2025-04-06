@@ -22,6 +22,7 @@ class UpdateDocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'asset_id' => 'sometimes|exists:assets,id',
             'document_name' => 'sometimes|string|max:255',
             'file' => 'sometimes|file|mimes:pdf,jpg,png|max:2048',
         ];

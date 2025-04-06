@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AssetDocument;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\DocumentResource;
 use App\Http\Resources\DocumentCollection;
+use App\Http\Requests\StoreDocumentRequest;
+use App\Http\Requests\UpdateDocumentRequest;
 
 class DocumentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try{
             $perPage = $request->query('per_page', 10);
@@ -41,6 +45,13 @@ class DocumentController extends Controller
     public function store(StoreDocumentRequest $request)
     {
         try{
+
+            if (!$request->hasFile('file')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'File tidak ditemukan dalam request!',
+                ], 422);
+            }
             $filePath = $request->file('file')->store('asset_documents', 'public');
 
             $assetDocument = AssetDocument::create(
@@ -72,13 +83,15 @@ class DocumentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AssetDocument $assetDocument)
+    public function show($id)
     {
         try{
+            $assetDocument = AssetDocument::findOrFail($id);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Detail dokumen aset berhasil diambil.',
-                'data' => new DocumentResource($assetDocument->load('asset')),
+                'data' => new DocumentResource($assetDocument->load(['asset'])),
             ], 200);
         }catch (\Exception $e) {
             Log::error('Error fetching asset document details: ' . $e->getMessage());
@@ -93,27 +106,25 @@ class DocumentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDocumentRequest $request, AssetDocument $assetDocument)
+    public function update(UpdateDocumentRequest $request, $id)
     {
         try{
-            // Jika ada file baru, hapus file lama dan upload file baru
-            if($request->hasFile('file')){
-                Storage::disk('public')->delete($assetDocument->file_path);
-                $filePath = $request->file('file')->store('asset_documents', 'public');
+            $assetDocument = AssetDocument::findOrFail($id);
 
-                $assetDocument->file_path = $filePath;
+            if ($request->hasFile('file')) {
+                $path = $request->file('file')->store('asset_documents', 'public');
+                $assetDocument->file_path = $path;
             }
 
-            $assetDocument->update([
-                'document_name' => $request->document_name ?? $assetDocument->document_name,
-                'file_path' => $filePath ?? $assetDocument->file_path,
-            ]);
-            
+            $assetDocument->asset_id = $request->input('asset_id');
+            $assetDocument->document_name = $request->input('document_name');
+            $assetDocument->save();
+
             return response()->json([
                 'success' => true,
-                'message' => 'Dokumen asset berhasil diperbarui!',
+                'message' => 'Dokumen asset berhasil diperbarui',
                 'data' => new DocumentResource($assetDocument),
-            ], 200);
+            ]);
         }catch(Exception $e){
             Log::error("Error updating asset document : " . $e->getMessage());
 
@@ -130,19 +141,22 @@ class DocumentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AssetDocument $assetDocument)
+    public function destroy($id)
     {
         try{
-            Storage::disk('public')->delete($assetDocument->file_path);
+
+            $assetDocument = AssetDocument::findOrFail($id);
+            if ($assetDocument->file_path) {
+                Storage::disk('public')->delete($assetDocument->file_path);
+            }
 
             $assetDocument->delete();
 
-            return response()->json(
-                [
-                    'success' => true,
-                    'message' => 'Berhasil menghapus asset dokumen!',
-                ], 200
-            );
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menghapus asset dokumen!',
+            ], 200);
+            
         }catch(Exception $e){
             Log::error("Gagal menghapus asset dokument : " . $e->getMessage());
 
