@@ -23,8 +23,8 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|max:255',
-            'email' => 'required|email|max:255',
-            'password' => 'required|string',
+            'email' => 'sometimes|required|email|max:255',
+            'password' => 'sometimes|required|string',
         ];
     }
 }

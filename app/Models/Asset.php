@@ -6,7 +6,9 @@ use App\Models\Location;
 use App\Models\Maintenance;
 use App\Models\Transaction;
 use App\Models\AssetDocument;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Asset extends Model
 {
