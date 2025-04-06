@@ -22,12 +22,12 @@ class StoreAssetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string}max:255',
+            'name' => 'required|string|max:255',
             'category' => 'required|in:Mesin,Kendaraan,Peralatan,Bahan Baku',
             'serial_number' => 'required|string|unique:assets,serial_number',
             'purchase_date' => 'required|date',
             'warranty_expiry' => 'nullable|date',
-            'status' => 'requred|in:Tersedia,Dipinjam,Dalam Perbaikan,Rusak',
+            'status' => 'required|in:Tersedia,Dipinjam,Dalam Perbaikan,Rusak',
             'location_id' => 'required|exists:locations,id',
         ];
     }

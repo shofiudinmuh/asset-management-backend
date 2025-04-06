@@ -22,8 +22,8 @@ class UpdateLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometime|string|max:255',
-            'address' => 'nullable|string',
+            'name' => 'sometimes|required|string|max:255',
+            'address' => 'sometimes|required|string',
         ];
     }
 
