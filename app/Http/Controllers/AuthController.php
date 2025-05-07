@@ -45,31 +45,6 @@ class AuthController extends Controller
     // LOGIN USER
     public function login(LoginRequest $request){
         try{
-            // $validateData = $request->validate([
-            //     'email' => 'required|email',
-            //     'password' => 'required|string'
-            // ]);
-
-            // // Cari user berdasarkan email
-            // $user = User::where('email', $validateData['email'])->first();
-
-            // // Jika email tidak ditemukan
-            // if (!$user) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Email belum terdaftar!',
-            //         'errors' => ['email' => 'Email belum terdaftar!']
-            //     ], 401);
-            // }
-
-            // // Jika password salah
-            // if (!Hash::check($validateData['password'], $user->password)) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Password salah!',
-            //         'errors' => ['password' => 'Password yang dimasukkan salah!']
-            //     ], 401);
-            // }
 
             $request->authenticate();
 
@@ -119,7 +94,8 @@ class AuthController extends Controller
     public function logout(Request $request){
         try{
             $request->user()->tokens()->delete();
-
+            $request->session()->invalidate();       // ⛔ invalidate session
+            $request->session()->regenerateToken();
             return response()->json([
                 'success' => true,
                 'message' => 'Logout berhasil. Token berhasil dihapus',
