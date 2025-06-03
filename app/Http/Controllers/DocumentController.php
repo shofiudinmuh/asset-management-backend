@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AssetDocument;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\DocumentResource;
 use App\Http\Resources\DocumentCollection;
@@ -18,13 +19,19 @@ class DocumentController extends Controller
     public function index(Request $request)
     {
         try{
-            $perPage = $request->query('per_page', 10);
-            $assetDocuments = AssetDocument::with('asset')->paginate($perPage);
+            
+            $assetDocuments = AssetDocument::with('asset')->select('asset_documents.*');
+
+            return DataTables::of($assetDocuments)
+                ->addColumn('asset_name', function($row){
+                    return $row->asset->name ?? '-';
+                })
+                ->make(true);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Data dokumen berhasil diambil!',
-                'data' => new DocumentCollection($assetDocuments),
+                // 'data' => new DocumentCollection($assetDocuments),
             ], 200);
         }catch(Exception $e){
             Log::error("Error fetching asset document : " . $e->getMessage());

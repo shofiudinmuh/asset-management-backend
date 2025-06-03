@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Maintenance;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use App\Http\Resources\MaintenanceResource;
+use App\Http\Resources\MaintenanceCollection;
 use App\Http\Requests\StoreMaintenanceRequest;
 use App\Http\Requests\UpdateMaintenanceRequest;
 
@@ -16,14 +18,21 @@ class MaintenanceController extends Controller
     public function index(Request $request)
     {
         try{
-            $perPage = $request->query('per_page', 10);
 
-            $maintenance = Maintenance::with(['asset', 'technician'])->paginate($perPage);
+            $maintenance = Maintenance::with(['asset', 'technician'])->select('maintenances.*');
+            return DataTables::of($maintenance)
+                ->addColumn('asset_name', function($row){
+                    return $row->asset->name ?? '-';
+                })
+                ->addColumn('technician_name', function($row){
+                    return $row->technician->name ?? '-';
+                })
+                ->make(true);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Data maintenance berhasil diambil!',
-                'data' => MaintenanceResource::collection($maintenance),
+                // 'data' => new MaintenanceCollection($maintenance),
             ], 200);
         }catch(Exception $e){
             Log::error('Error fetching maintenance data : ' . $e->getMessage());

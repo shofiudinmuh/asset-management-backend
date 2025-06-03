@@ -24,7 +24,7 @@ class UpdatePurchaseOrderRequest extends FormRequest
         return [
             'supplier_id' => 'sometimes|exists:suppliers,id',
             'order_date' => 'sometimes|date',
-            'total_cost' => 'sometimes|numeric',
+            'total_soct' => 'sometimes|numeric',
             'status' => 'sometimes|in:Dipesan,Diterima,Dibatalkan',
         ];
     }

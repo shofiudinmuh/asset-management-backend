@@ -24,7 +24,7 @@ class StoreDocumentRequest extends FormRequest
         return [
             'asset_id' => 'required|exists:assets,id',
             'document_name' => 'required|string|max:255',
-            'file' => 'required|file|mimes:pdf,png,png|max:2048',
+            'file_path' => 'required|file|mimes:pdf,png,png|max:2048',
         ];
     }
 
@@ -33,9 +33,9 @@ class StoreDocumentRequest extends FormRequest
         return [
             'asset_id.required' => 'Asset ID wajib diisi.',
             'document_name.required' => 'Nama dokumen wajib diisi.',
-            'file.required' => 'File wajib diupload.',
-            'file.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
-            'file.max' => 'File tidak boleh lebih dari 2MB.',
+            'file_path.required' => 'File wajib diupload.',
+            'file_path.mimes' => 'File harus berupa PDF, JPG, atau PNG.',
+            'file_path.max' => 'File tidak boleh lebih dari 2MB.',
         ];
     }
 }

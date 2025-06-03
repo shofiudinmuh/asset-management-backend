@@ -23,7 +23,7 @@ class StoreAssetRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'category' => 'required|in:Mesin,Kendaraan,Peralatan,Bahan Baku',
+            'category' => 'required|in:Kendaraan,Peralatan Elektronik,Perlengkapan Kantor,Furniture,IT Equipment',
             'serial_number' => 'required|string|unique:assets,serial_number',
             'purchase_date' => 'required|date',
             'warranty_expiry' => 'nullable|date',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use App\Http\Resources\LocationResource;
 use App\Http\Resources\LocationCollection;
 use App\Http\Requests\StoreLocationRequest;
@@ -14,16 +15,42 @@ class LocationController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function search(Request $request){
+        try {
+            $query = Location::query();
+    
+            if ($request->has('q')) {
+                $query->where('name', 'like', '%' . $request->q . '%'); // ✅ FIXED: use $request->q
+            }
+    
+            $users = $query->limit(10)->get(['id', 'name']); // ✅ LIMIT and SELECT columns only
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Data lokasi berhasil diambil!',
+                'data' => $users,
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Error searching locations data : " . $e->getMessage());
+    
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data lokasi!',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
     public function index(Request $request)
     {
         try{
-            $perPage = $request->query('per_page', 10);
-            $locations = Location::paginate($perPage);
+            return DataTables::of(Location::select(['id', 'name', 'address']))->make(true);
             
             return response()->json([
                 'success' => true,
                 'message' => 'Data lokasi berhasil diambil.',
-                'data' => new LocationCollection($locations),
+                // 'data' => new LocationCollection($locations),
             ], 200);
         }catch(Exception $e){
             Log::error('Error fetching locations: ' .$e->getMessage());

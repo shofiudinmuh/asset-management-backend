@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use App\Http\Resources\TransactionResource;
 use App\Http\Resources\TransactionCollection;
 use App\Http\Requests\StoreTransactionRequest;
@@ -17,13 +18,29 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         try{
-            $perPage = $request->query('per_page', 10);
-            $transactions = Transaction::with(['asset', 'user', 'location'])->paginate($perPage);
+            
+            $transactions = Transaction::with(['asset', 'user', 'location'])->select('transactions.*');
+            return DataTables::of($transactions)
+                ->addColumn('asset_name', function($row){
+                    return $row->asset->name ?? '-';
+                })
+                ->addColumn('asset_number', function($row){
+                    return $row->asset->serial_number ?? '-';
+                })
+                ->addColumn('user_name', function($row){
+                    return $row->user->name ?? '-';
+                })
+                ->addColumn('location_name', function($row){
+                    return $row->location->name ?? '-';
+                })
+                ->make(true);
+            // ;
+            
 
             return response()->json([
                 'success' => true,
                 'message' => 'Data transaksi berhasil diambil',
-                'data' => new TransactionCollection($transactions),
+                // 'data' => new TransactionCollection($transactions),
             ], 200);
         }catch(Exception $e){
             Log::error('Error fetching transactions : ' . $e->getMessage());

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\UserCollection;
+use Illuminate\Support\Facades\Schema;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 
@@ -15,20 +18,24 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        try{
-            $perPage = $request->query('per_page', 10);
-            $users = User::paginate($perPage);
-
+    public function search(Request $request){
+        try {
+            $query = User::query();
+    
+            if ($request->has('q')) {
+                $query->where('name', 'like', '%' . $request->q . '%'); // ✅ FIXED: use $request->q
+            }
+    
+            $users = $query->limit(10)->get(['id', 'name']); // ✅ LIMIT and SELECT columns only
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Data user berhasil diambil!',
-                'data' => new UserCollection($users),
-            ], 200);
-        }catch(Exception $e){
-            Log::error("Error fetching users data : " .$e->getMessage());
-
+                'data' => $users,
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Error searching users data : " . $e->getMessage());
+    
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal mengambil data users!',
@@ -36,6 +43,26 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+
+
+
+    public function index(Request $request)
+        {
+            try {
+                
+                return DataTables::of(User::select(['id', 'name', 'email', 'created_at']))->make(true);
+                
+                
+            } catch(Exception $e) {
+                Log::error("Error fetching users data: " . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mengambil data users!',
+                    'error' => $e->getMessage(),
+                ], 500);
+            }
+        }
 
     /**
      * Store a newly created resource in storage.
@@ -65,6 +92,27 @@ class UserController extends Controller
         }
     }
 
+
+    public function me(User $user)
+    {
+
+        try{
+            $user = Auth::user();
+            return response()->json([
+                'success' =>true,
+                'message' => 'Detail user berhasil diambil!',
+                'data' => new UserResource($user),
+            ], 200);
+        }catch(Exception $e){
+            Log::error("Error fetching detail user data : " .$e->getMessage());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Gagal mengambil detail user!',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
     /**
      * Display the specified resource.
      */
