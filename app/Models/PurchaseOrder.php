@@ -6,6 +6,7 @@ use App\Models\Supplier;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PurchaseOrder extends Model
 {
@@ -14,13 +15,13 @@ class PurchaseOrder extends Model
     protected $fillable = [
         'supplier_id',
         'order_date',
-        'total_cost',
+        'total_soct',
         'status',
     ];
 
     protected $casts = [
         'order_date' => 'date',
-        'total_cost' => 'decimal:2',
+        'total_soct' => 'decimal:2',
     ];
 
     /**

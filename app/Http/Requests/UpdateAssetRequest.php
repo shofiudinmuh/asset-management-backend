@@ -23,7 +23,7 @@ class UpdateAssetRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|max:255',
-            'category' => 'sometimes|in:Mesin,Kendaraan,Peralatan,Bahan Baku',
+            'category' => 'sometimes|in:Kendaraan,Peralatan Elektronik,Perlengkapan Kantor,Furniture,IT Equipment',
             'serial_number' => 'sometimes|string|unique:assets,serial_number,'.$this->asset->id,
             'purchase_date' => 'sometimes|date',
             'warranty_expiry' => 'nullable|date',

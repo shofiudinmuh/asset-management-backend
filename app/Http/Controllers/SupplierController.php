@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Log;
 use App\Http\Resources\SupplierResource;
 use App\Http\Resources\SupplierCollection;
@@ -15,16 +16,43 @@ class SupplierController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+     public function search(Request $request){
+        try {
+            $query = Supplier::query();
+    
+            if ($request->has('q')) {
+                $query->where('name', 'like', '%' . $request->q . '%'); // ✅ FIXED: use $request->q
+            }
+    
+            $suppliers = $query->limit(10)->get(['id', 'name']); // ✅ LIMIT and SELECT columns only
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Data supplier berhasil diambil!',
+                'data' => $suppliers,
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Error searching supplier data : " . $e->getMessage());
+    
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data supplier!',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
     public function index(Request $request)
     {
         try{
-            $perPage = $request->query('per_page', 10);
-            $suppliers = Supplier::paginate($perPage);
+            return DataTables::of(Supplier::select(['id', 'name', 'contact_person', 'phone', 'email', 'address']))->make(true);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Data supplier berhasil diambil!',
-                'data' => new SupplierCollection($suppliers),
+                // 'data' => new SupplierCollection($suppliers),
             ], 200);
         }catch(Exception $e){
             Log::error("Error fetching supplier data :" . $e->getMessage());

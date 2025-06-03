@@ -17,9 +17,9 @@ class PurchaseOrderResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'supplier' => new SupplierResource($this->whenLoad('supplier')),
+            'supplier' => new SupplierResource($this->whenLoaded('supplier')),
             'order_date' => $this->order_date,
-            'total_cost' => $this->total_cost,
+            'total_soct' => $this->total_cost,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

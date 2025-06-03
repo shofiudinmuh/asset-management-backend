@@ -8,26 +8,50 @@ use App\Http\Resources\PurchaseOrderResource;
 use App\Http\Resources\PurchaseOrderCollection;
 use App\Http\Requests\StorePurchaseOrderRequest;
 use App\Http\Requests\UpdatePurchaseOrderRequest;
+use Yajra\DataTables\DataTables;
 
 class PurchaseOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    // public function index(Request $request)
+    // {
+    //     try{
+    //         $perPage = $request->query('per_page', 10);
+
+    //         $purchaseOrders = PurchaseOrder::with('supplier')->paginate($perPage);
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Data purchase order berhasil diambil!.',
+    //             'data' => new PurchaseOrderCollection($purchaseOrders),
+    //         ], 200);
+    //     }catch(Exception $e){
+    //         Log::error("Error fetching purchase orders : " . $e->getMessage());
+
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Gagal mengambil data purchase order!',
+    //             'error' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
+    
+
     public function index(Request $request)
     {
-        try{
-            $perPage = $request->query('per_page', 10);
+        try {
+            $query = PurchaseOrder::with('supplier')->select('purchase_orders.*');
 
-            $purchaseOrders = PurchaseOrder::with('supplier')->paginate($perPage);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data purchase order berhasil diambil!.',
-                'data' => new PurchaseOrderCollection($purchaseOrders),
-            ], 200);
-        }catch(Exception $e){
-            Log::error("Error fetching purchase orders : " . $e->getMessage());
+            return DataTables::of($query)
+                ->addColumn('supplier_name', function ($row) {
+                    return $row->supplier->name ?? '-';
+                })
+                ->make(true);
+        } catch(Exception $e) {
+            Log::error("Error fetching purchase orders: " . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -36,6 +60,7 @@ class PurchaseOrderController extends Controller
             ], 500);
         }
     }
+
 
     /**
      * Store a newly created resource in storage.

@@ -29,12 +29,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/profiles', [AuthController::class, 'profile']);
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/locations/search', [LocationController::class, 'search']);
     Route::resource('/locations', LocationController::class);
-    Route::resource('/assets', AssetController::class);
     Route::resource('/maintenances', MaintenanceController::class);
+    Route::get('/assets/search', [AssetController::class, 'search']);
+    Route::resource('/assets', AssetController::class);
     Route::resource('/transactions', TransactionController::class);
+    Route::get('/suppliers/search', [SupplierController::class, 'search']);
     Route::resource('/suppliers', SupplierController::class);
     Route::resource('/purchase-orders', PurchaseOrderController::class);
     Route::resource('/documents', DocumentController::class);
+    Route::get('/users/search', [UserController::class, 'search']);
+    Route::get('/users/me', [UserController::class, 'me']);
     Route::resource('/users', UserController::class);
 });

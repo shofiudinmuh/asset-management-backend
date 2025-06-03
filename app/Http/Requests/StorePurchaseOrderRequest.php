@@ -24,7 +24,7 @@ class StorePurchaseOrderRequest extends FormRequest
         return [
             'supplier_id' => 'required|exists:suppliers,id',
             'order_date' => 'required|date',
-            'total_cost' => 'required|numeric',
+            'total_soct' => 'required|numeric',
             'status' => 'required|in:Dipesan,Diterima,Dibatalkan',
         ];
     }

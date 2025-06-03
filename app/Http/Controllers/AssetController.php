@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Asset;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use App\Http\Resources\AssetResource;
 use App\Http\Resources\AssetCollection;
 use App\Http\Requests\StoreAssetRequest;
@@ -14,16 +15,48 @@ class AssetController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function search(Request $request){
+        try {
+            $query = Asset::query();
+    
+            if ($request->has('q')) {
+                $query->where('name', 'like', '%' . $request->q . '%'); // ✅ FIXED: use $request->q
+            }
+    
+            $users = $query->limit(10)->get(['id', 'name']); // ✅ LIMIT and SELECT columns only
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Data asset berhasil diambil!',
+                'data' => $users,
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Error searching asset data : " . $e->getMessage());
+    
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data asset!',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
     public function index(Request $request)
     {
         try{
-            $perPage = $request->query('per_page', 10);
-            $assets = Asset::with(['location'])->paginate($perPage);
+            $assets = Asset::with(['location'])->select('assets.*');
+
+            return DataTables::of($assets)
+                ->addColumn('location_name', function($row){
+                    return $row->location->name ?? '-';
+                })
+                ->make(true);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Data aset berhasil diambil',
-                'data' => new AssetCollection($assets),
+                // 'data' => new AssetCollection($assets),
             ], 200);
         }catch(Exception $e){
             Log::error('Error fetching assets: '. $e->getMessage());
